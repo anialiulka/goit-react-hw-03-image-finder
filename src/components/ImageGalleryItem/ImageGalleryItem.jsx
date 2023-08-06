@@ -25,9 +25,14 @@ export class ImageGalleryItem extends Component {
     if (!images) {
       return;
     } else
-      return images.map(({ id, webformatURL }) => (
+      return images.map(({ id, webformatURL, largeImageURL }) => (
         <li className={css.galleryItem} key={id}>
-          <img src={webformatURL} alt="" className={css.image} />
+          <img
+            src={webformatURL}
+            alt=""
+            className={css.image}
+            onClick={() => this.props.showModal(largeImageURL)}
+          />
         </li>
       ));
   }

@@ -3,15 +3,35 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { Modal } from './Modal/Modal';
+import { searchImages } from 'components/GetImages/GetImages';
+import { Button } from './Button/Button';
+import { Loader } from './Loader/Loader';
 
 export class App extends Component {
   state = {
     searchTerm: '',
     isShowModal: false,
     modalImage: '',
+    images: [],
+    isLoading: false,
+    error: null,
+    page: 1,
+    totalImages: 0,
   };
-  onSubmit = data => {
-    this.setState({ searchTerm: data });
+
+  onSubmit = e => {
+    e.preventDefault();
+    const query = e.target.elements.searchWord.value.trim().toLowerCase();
+    if (!query.length) {
+      alert('Please, write a search word');
+      return;
+    }
+    this.setState({
+      searchTerm: query,
+      images: [],
+      page: 1,
+    });
+    e.target.reset();
   };
 
   showModal = url => {
@@ -23,21 +43,67 @@ export class App extends Component {
     this.setState({ isShowModal: false });
   };
 
+  handleLoadMoreButton = () => {
+    this.setState(prevState => ({ page: prevState.page + 1 }));
+  };
+
+  componentDidUpdate(_, prevState) {
+    if (
+      prevState.searchTerm !== this.state.searchTerm ||
+      prevState.page !== this.state.page
+    ) {
+      this.setState({ isLoading: true });
+      searchImages(this.state.searchTerm, this.state.page)
+        .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+          return Promise.reject(
+            new Error(`Nothing found for ${this.state.searchTerm}`)
+          );
+        })
+        .then(images => {
+          if (!images.hits.length) {
+            alert('Nothing found');
+          } else {
+            this.setState(prevState => ({
+              images: [...prevState.images, ...images.hits],
+              totalImages: images.totalHits,
+            }));
+          }
+        })
+        .catch(error => {
+          console.log(error);
+          this.setState({ error });
+        })
+        .finally(() => {
+          this.setState({ isLoading: false });
+        });
+    }
+  }
+
   render() {
     return (
-      <div>
+      <>
         <Searchbar onSubmit={this.onSubmit} />
         <ImageGallery>
-          <ImageGalleryItem
-            searchTerm={this.state.searchTerm}
-            showModal={this.showModal}
-          />
+          {' '}
+          {this.state.images.map(image => (
+            <ImageGalleryItem
+              image={image}
+              key={image.id}
+              showModal={this.showModal}
+            />
+          ))}
         </ImageGallery>
-
+        {this.state.isLoading && <Loader />}
         {this.state.isShowModal && (
           <Modal image={this.state.modalImage} closeModal={this.closeModal} />
         )}
-      </div>
+        {this.state.totalImages > this.state.images.length && (
+          <Button onClick={this.handleLoadMoreButton} />
+        )}
+      </>
     );
   }
 }

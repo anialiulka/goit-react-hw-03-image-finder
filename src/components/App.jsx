@@ -3,6 +3,7 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { Modal } from './Modal/Modal';
+import { Button } from './Button/Button';
 
 export class App extends Component {
   state = {
@@ -33,6 +34,7 @@ export class App extends Component {
             showModal={this.showModal}
           />
         </ImageGallery>
+
         {this.state.isShowModal && (
           <Modal image={this.state.modalImage} closeModal={this.closeModal} />
         )}

@@ -3,9 +3,9 @@ import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { Modal } from './Modal/Modal';
-import { searchImages } from 'components/GetImages/GetImages';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
+import { searchImages } from 'components/GetImages/GetImages';
 
 export class App extends Component {
   state = {
@@ -87,7 +87,6 @@ export class App extends Component {
       <>
         <Searchbar onSubmit={this.onSubmit} />
         <ImageGallery>
-          {' '}
           {this.state.images.map(image => (
             <ImageGalleryItem
               image={image}

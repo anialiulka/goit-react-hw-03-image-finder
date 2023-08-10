@@ -1,10 +1,9 @@
 import css from './ImageGalleryItem.module.css';
 import PropTypes from 'prop-types';
 
-export const ImageGalleryItem = ({ image, showModal }) => {
-  const { webformatURL, largeImageURL } = image;
-  return (
-    <li className={css.galleryItem}>
+export const ImageGalleryItem = ({ images, showModal }) => {
+  return images.map(({ webformatURL, largeImageURL, id }) => (
+    <li className={css.galleryItem} key={id}>
       <img
         src={webformatURL}
         alt=""
@@ -12,10 +11,10 @@ export const ImageGalleryItem = ({ image, showModal }) => {
         onClick={() => showModal(largeImageURL)}
       />
     </li>
-  );
+  ));
 };
 
 ImageGalleryItem.propTypes = {
-  image: PropTypes.object.isRequired,
+  images: PropTypes.array.isRequired,
   showModal: PropTypes.func.isRequired,
 };

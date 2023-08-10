@@ -5,7 +5,7 @@ import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { Modal } from './Modal/Modal';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
-import { searchImages } from 'components/GetImages/GetImages';
+import { searchImages } from 'GetImages';
 
 export class App extends Component {
   state = {
@@ -86,22 +86,22 @@ export class App extends Component {
     return (
       <>
         <Searchbar onSubmit={this.onSubmit} />
-        <ImageGallery>
-          {this.state.images.map(image => (
+        {this.state.images.length > 0 && (
+          <ImageGallery>
             <ImageGalleryItem
-              image={image}
-              key={image.id}
               showModal={this.showModal}
+              images={this.state.images}
             />
-          ))}
-        </ImageGallery>
+          </ImageGallery>
+        )}
         {this.state.isLoading && <Loader />}
         {this.state.isShowModal && (
           <Modal image={this.state.modalImage} closeModal={this.closeModal} />
         )}
-        {this.state.totalImages > this.state.images.length && (
-          <Button onClick={this.handleLoadMoreButton} />
-        )}
+        {this.state.totalImages > this.state.images.length &&
+          !this.state.isLoading && (
+            <Button onClick={this.handleLoadMoreButton} />
+          )}
       </>
     );
   }

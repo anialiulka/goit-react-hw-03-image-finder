@@ -1,7 +1,6 @@
 import { Component } from 'react';
 import { Searchbar } from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
-import { ImageGalleryItem } from './ImageGalleryItem/ImageGalleryItem';
 import { Modal } from './Modal/Modal';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
@@ -87,12 +86,7 @@ export class App extends Component {
       <>
         <Searchbar onSubmit={this.onSubmit} />
         {this.state.images.length > 0 && (
-          <ImageGallery>
-            <ImageGalleryItem
-              showModal={this.showModal}
-              images={this.state.images}
-            />
-          </ImageGallery>
+          <ImageGallery images={this.state.images} showModal={this.showModal} />
         )}
         {this.state.isLoading && <Loader />}
         {this.state.isShowModal && (
